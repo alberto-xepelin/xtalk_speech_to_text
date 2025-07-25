@@ -3,7 +3,9 @@ from pydub import AudioSegment
 from google.cloud import speech
 import os
 import glob
+import textwrap
 import subprocess
+import json
 
 
 def convert_to_wav_if_needed(filepath):
@@ -218,9 +220,8 @@ def subir_transcripcion_a_gcs(local_path_txt, bucket_name, blob_path_txt):
 
 def generar_dialogo_final(openai_client, contenido_merged, output_path_txt):
     try:
-
-        prompt_dialogo = f"""
-        Estoy transcribiendo una llamada entre un ejecutivo de Xepelin y un cliente.
+        prompt_dialogo = textwrap.dedent(f"""
+        Estoy transcribiendo una llamada entre un ejecutivo de Xepelin (sdr) y un cliente (client).
 
         La transcripción completa de la llamada es la siguiente:
 
@@ -230,21 +231,31 @@ def generar_dialogo_final(openai_client, contenido_merged, output_path_txt):
 
         Regla importante:
         - **El Ejecutivo siempre es quien llama, pero no necesariamente el que primero habla**.
-        - **El Cliente es quien responde, pero no necesariamente habla despues**.
-        - **El Ejecutivo generalmente es quien hace preguntas en busca de alguien
+        - **El Cliente es quien responde, pero no necesariamente habla después**.
+        - **El Ejecutivo generalmente es quien hace preguntas en busca de alguien**
 
-        Utiliza esta regla para etiquetar correctamente cada línea.
+        Además necesito que me hagas un resumen de la llamada. Quiero que el output sea en el siguiente formato:
 
-        Devuelve el resultado en este formato exacto:
-
-        ----------------------------------------------------------------------
-        Ejecutivo: Hola, llamo desde Xepelin para confirmar una factura
-        ----------------------------------------------------------------------
-        Cliente: Sí, claro, ¿a qué empresa representa?
-        ----------------------------------------------------------------------
-
-        No expliques nada adicional. Solo devuelve el diálogo en el formato indicado.
-        """
+        ```json
+        {{
+        "transcription": [
+            {{
+            "role": "sdr",
+            "content": "Hola, muy buenos días. Disculpe, ¿me podría por favor comunicar con la contadora Reyes?"
+            }},
+            {{
+            "role": "client",
+            "content": "¿De dónde llamas?"
+            }},
+            {{
+            "role": "sdr",
+            "content": "De Zeppelin."
+            }}
+        ],
+        "summary": "Un SDR de Zeppelin contacta a la contadora Reyes para presentarle una propuesta de línea de crédito empresarial. La contadora confirma haber recibido la información y acuerdan un seguimiento para la semana siguiente."
+        }}
+        No expliques nada adicional. Solo devuelve el diccionario en el formato indicado.
+        """)
 
         response = openai_client.chat.completions.create(
             model="gpt-4",
@@ -255,17 +266,29 @@ def generar_dialogo_final(openai_client, contenido_merged, output_path_txt):
             temperature=0.3
         )
 
-        dialogo = response.choices[0].message.content
+        output_raw = response.choices[0].message.content.strip()
 
-        with open(output_path_txt, "w", encoding="utf-8") as f:
-            f.write(dialogo)
+        default_dict = {}
+        default_dict['transcription'] = [
+            {'role': 'client', 'content': 'no transcription'},
+            {'role': 'sdr', 'content': 'no transcription'}
+        ]
+        default_dict['summary'] = 'no transcription'
+
+        try:
+            output_raw = output_raw.replace("```json", "").replace("```", "").strip()
+            output_dict = json.loads(output_raw)
+        except:
+            output_dict = default_dict
+
+        with open(output_path_txt, 'w', encoding='utf-8') as f:
+            json.dump(output_dict, f, ensure_ascii=False, indent=4)
 
         print(f"📄 Diálogo generado y guardado en: {output_path_txt}")
-        return dialogo, 200
+        return output_dict, 200
 
     except Exception as e:
         return f"❌ Error al generar diálogo final con GPT: {str(e)}", 500
-
 
 def leer_contenido_archivo(ruta_archivo):
     try:

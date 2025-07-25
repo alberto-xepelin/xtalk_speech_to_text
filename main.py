@@ -128,9 +128,9 @@ def pipeline():
     if signal_7c != 200:
         return contenido_merged, signal_7c
 
-    path_dialogo_txt = f"{tmp_dir}/transcript_diarizacion.txt"
-
     # 8. Transcripcion final
+
+    path_dialogo_txt = f"{tmp_dir}/transcript_diarizacion.json"
 
     dialogo, signal_8a = generar_dialogo_final(
         openai_client=openai_client,
@@ -140,14 +140,5 @@ def pipeline():
 
     if signal_8a != 200:
         return dialogo, signal_8a
-
-    msg_dialogo_upload, signal_8b = subir_transcripcion_a_gcs(
-        local_path_txt=path_dialogo_txt,
-        bucket_name="xtalk_logs_v1",
-        blob_path_txt=f"{gcs_prefix}/transcript_diarizacion.txt"
-    )
-
-    if signal_8b != 200:
-        return msg_dialogo_upload, signal_8b
 
     return dialogo, 200
