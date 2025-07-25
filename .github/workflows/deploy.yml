@@ -33,7 +33,7 @@ jobs:
       run: |
         docker buildx build --platform linux/amd64 -t xtalk_function_v1:1.0.0 . --load
 
-    - name: Docker tag and push to Artifact Registry
+    - name: Docker tag and push to Artifact Registry A
       run: |
         docker tag xtalk_function_v1:1.0.0 us-central1-docker.pkg.dev/dm-data-aiml/xtalk-function-v1/xtalk_function_v1:1.0.0
         docker push us-central1-docker.pkg.dev/dm-data-aiml/xtalk-function-v1/xtalk_function_v1:1.0.0
