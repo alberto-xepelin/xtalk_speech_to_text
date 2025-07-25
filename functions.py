@@ -227,7 +227,8 @@ def generar_dialogo_final(openai_client, contenido_merged, output_path_txt):
 
         {contenido_merged}
 
-        Necesito que reconstruyas el diálogo intercalado en el orden correcto, asignando correctamente quién habla en cada turno.
+        Necesito que reconstruyas el diálogo en el orden correcto, asignando correctamente quién habla en cada turno 
+        (El sdr y el client podrían hablar de manera consecutiva algunas veces).
 
         Intrucciones importantes:
         - El emisor es el 'sdr' y el receptor el 'client'.
