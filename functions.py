@@ -230,11 +230,19 @@ def generar_dialogo_final(openai_client, contenido_merged, output_path_txt):
         Necesito que reconstruyas el diálogo en el orden correcto, asignando correctamente quién habla en cada turno 
         (El sdr y el client podrían hablar de manera consecutiva algunas veces).
 
-        Intrucciones importantes:
-        - El emisor es el 'sdr' y el receptor el 'client'.
-        - El `sdr` es el ejecutivo que realiza la llamada para consultar sobre facturas u ofrecer algun servicio financiero.
-        - Cuando habla una grabadora de inmediato corresponde a 'client' (pues se esta llamando al cliente y contesta su grabadora).
-        - El 'client' es la persona a quien se le ofrecen productos o se le preguntan por facturas.
+        Reglas claras:
+        1. El emisor de la llamada es el SDR, quien ofrece servicios financieros o consulta sobre facturas.
+        2. El receptor es el cliente. Si hay una grabadora automática al inicio, pertenece al cliente.
+        3. Si una persona habla por varios turnos consecutivos (por ejemplo, explicaciones largas), debes mantener el mismo rol.
+        4. Si hay dudas en la asignación de un turno, **usa el contexto de los turnos previos y la intención (ofrecer o responder)** para decidir.
+        5. El rol "sdr" suele:
+        - Preguntar por el área de finanzas o facturas.
+        - Mencionar "Xepelin", "financiamiento", "línea de crédito", "levantar capital", etc.
+        - Cerrar la llamada con agradecimientos.
+        6. El rol "client" suele:
+        - Preguntar "¿Quién habla?", "¿Qué empresa es?"
+        - Dar información como correos, teléfonos, o confirmar que no está disponible cierta persona.
+        - Rechazar o aceptar propuestas.
 
 
         Además necesito que me hagas un resumen de la llamada. Quiero que el output sea en el siguiente formato:
