@@ -17,6 +17,7 @@ from functions import (
     subir_transcripcion_a_gcs_json
 )
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 
@@ -40,12 +41,13 @@ def pipeline():
     # 0. Chequear si ya existe la transcripción
     client = storage.Client()
     bucket = client.bucket("xtalk_logs_v1")
-    blob_path = f"{pais}/{carpeta_file}/transcript_diarizacion.txt"
+    blob_path = f"{pais}/{carpeta_file}/transcript_diarizacion.json"
     blob = bucket.blob(blob_path)
 
     if blob.exists(client):
         content = blob.download_as_text()
-        return content, 200
+        content_dict = json.loads(content)
+        return content_dict, 200
 
     # 1. Leer el archivo de audio
     final_path, signal_1 = read_audio_file(pais, nombre_file, tmp_dir)
