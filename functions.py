@@ -229,10 +229,12 @@ def generar_dialogo_final(openai_client, contenido_merged, output_path_txt):
 
         Necesito que reconstruyas el diálogo intercalado en el orden correcto, asignando correctamente quién habla en cada turno.
 
-        Regla importante:
-        - **El Ejecutivo siempre es quien llama, pero no necesariamente el que primero habla**.
-        - **El Cliente es quien responde, pero no necesariamente habla después**.
-        - **El Ejecutivo generalmente es quien hace preguntas en busca de alguien**
+        Intrucciones importantes:
+        - El emisor es el 'sdr' y el receptor el 'client'.
+        - El `sdr` es el ejecutivo que realiza la llamada para consultar sobre facturas u ofrecer algun servicio financiero.
+        - Cuando habla una grabadora de inmediato corresponde a 'client' (pues se esta llamando al cliente y contesta su grabadora).
+        - El 'client' es la persona a quien se le ofrecen productos o se le preguntan por facturas.
+
 
         Además necesito que me hagas un resumen de la llamada. Quiero que el output sea en el siguiente formato:
 
