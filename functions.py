@@ -296,3 +296,17 @@ def leer_contenido_archivo(ruta_archivo):
             return f.read(), 200
     except Exception as e:
         return f"❌ Error al leer archivo {ruta_archivo}: {str(e)}", 500
+
+def subir_transcripcion_a_gcs_json(local_path_txt, bucket_name, blob_path_txt):
+    try:
+        client = storage.Client()
+        bucket = client.bucket(bucket_name)
+        blob = bucket.blob(blob_path_txt)
+
+        blob.upload_from_filename(local_path_txt, content_type="application/json")
+        print(f"📄 Transcripción subida a gs://{bucket_name}/{blob_path_txt}")
+
+        return f"Transcripción subida correctamente a gs://{bucket_name}/{blob_path_txt}", 200
+
+    except Exception as e:
+        return f"❌ Error al subir transcripción: {str(e)}", 500

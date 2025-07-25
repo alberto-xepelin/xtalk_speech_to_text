@@ -13,7 +13,8 @@ from functions import (
     transcribir_segmentos,
     subir_transcripcion_a_gcs,
     generar_dialogo_final,
-    leer_contenido_archivo
+    leer_contenido_archivo,
+    subir_transcripcion_a_gcs_json
 )
 from dotenv import load_dotenv
 
@@ -129,7 +130,6 @@ def pipeline():
         return contenido_merged, signal_7c
 
     # 8. Transcripcion final
-
     path_dialogo_txt = f"{tmp_dir}/transcript_diarizacion.json"
 
     dialogo, signal_8a = generar_dialogo_final(
@@ -140,5 +140,15 @@ def pipeline():
 
     if signal_8a != 200:
         return dialogo, signal_8a
+    
+    # 9. Subir JSON final a GCS
+    msg_json_upload, signal_9 = subir_transcripcion_a_gcs_json(
+        local_path_txt=path_dialogo_txt,
+        bucket_name="xtalk_logs_v1",
+        blob_path_txt=f"{gcs_prefix}/transcript_diarizacion.json"
+    )
+
+    if signal_9 != 200:
+        return msg_json_upload, signal_9
 
     return dialogo, 200
