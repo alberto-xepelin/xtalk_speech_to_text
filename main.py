@@ -143,7 +143,7 @@ def pipeline():
     if signal_8a != 200:
         return dialogo, signal_8a
     
-    # 9. Subir JSON final a GCS
+    # 9. Subir JSON final a GCS.
     msg_json_upload, signal_9 = subir_transcripcion_a_gcs_json(
         local_path_txt=path_dialogo_txt,
         bucket_name="xtalk_logs_v1",
