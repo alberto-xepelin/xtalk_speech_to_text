@@ -56,6 +56,7 @@ def pipeline():
     print('BLOB PATH:', blob_path)
 
     if blob.exists(client):
+        print('EXISTE EL ARCHIVO')
         # Existe el archivo
         pass
     else:
