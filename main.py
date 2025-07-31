@@ -32,13 +32,17 @@ print("✔ Flask app is loading...")
 @app.route("/", methods=["POST"])
 def pipeline():
     pais = request.args.get("country", "MX")
-    nombre_file = request.args.get("name_file", "1")
+    url_audio = request.args.get("url_audio", "-")
+
+    nombre_file = f"{url_audio.split('/')[-1]}.wav"
     carpeta_file = nombre_file.split('.wav')[0]
 
     # 👉 Nueva carpeta temporal única
     unique_id = str(uuid.uuid4())
     tmp_dir = f"/tmp/{unique_id}"
     os.makedirs(tmp_dir, exist_ok=True)
+
+    # Data Pipeline
 
     # 0. Chequear si ya existe la transcripción
     client = storage.Client()
