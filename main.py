@@ -47,7 +47,7 @@ def pipeline():
     # i. Chequear si existe el archivo
     client = storage.Client()
     bucket = client.bucket("xepelin-ds-prod-xtalk")
-    blob_path = f"audios/{pais}/{carpeta_file}/{nombre_file}"
+    blob_path = f"audios/{pais}/{nombre_file}"
     blob = bucket.blob(blob_path)
 
     print('BLOB PATH:', blob_path)
