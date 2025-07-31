@@ -34,7 +34,7 @@ def pipeline():
     pais = request.args.get("country", "MX")
     url_audio = request.args.get("url_audio", "-")
 
-    nombre_file = f"{url_audio.split('/')[-1]}.wav"
+    nombre_file = f"audio_{url_audio.split('/')[-1]}.wav"
 
     print('NOMBRE FILE:', nombre_file)
 
