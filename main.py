@@ -15,7 +15,8 @@ from functions import (
     generar_dialogo_final,
     leer_contenido_archivo,
     subir_transcripcion_a_gcs_json,
-    download_from_root_origin
+    download_from_root_origin,
+    upload_audio_to_gcs
 )
 from dotenv import load_dotenv
 import json
@@ -58,10 +59,18 @@ def pipeline():
         # Existe el archivo
         pass
     else:
+        print('NO EXISTE AL ARCHIVO')
         # No existe el archivo: Se debe descargar
-        audio_bytes = download_from_root_origin(url_audio, TOKEN_HSP_API)
-        print('EXISTENCIA: NO EXISTEEEE')
-        print('Tipo de archivo:', type(audio_bytes))
+        audio_bytes, signal_bytes = download_from_root_origin(url_audio, TOKEN_HSP_API)
+
+        if signal_bytes != 200:
+            return audio_bytes, signal_bytes
+        else:
+            print('SUBIENDO A GCS')
+            upload_result, signal_upload = upload_audio_to_gcs(audio_bytes, "xtalk-transcription", blob_path)
+
+            if signal_upload != 200:
+                return upload_result, signal_upload
 
     # 0. Chequear si ya existe la transcripción
     client = storage.Client()

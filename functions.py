@@ -7,6 +7,7 @@ import textwrap
 import subprocess
 import json
 import requests
+import io
 
 def download_from_root_origin(url, token):
 
@@ -16,9 +17,28 @@ def download_from_root_origin(url, token):
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-    audio_bytes = response.content
 
-    return audio_bytes
+    if response.status_code != 200:
+        return f"❌ Error al leer archivo desde Hubspot", 500
+    else:
+        audio_bytes = response.content
+
+        return audio_bytes, 200
+
+def upload_audio_to_gcs(audio_bytes, bucket_name, blob_path):
+
+    try:
+        client = storage.Client()
+        bucket = client.bucket(bucket_name)
+        blob = bucket.blob(blob_path)
+
+        # Subir los bytes directamente
+        blob.upload_from_file(io.BytesIO(audio_bytes), rewind=True, content_type='audio/wav')
+
+        return f"✅ Archivo subido exitosamente a: gs://{bucket_name}/{blob_path}", 200
+
+    except Exception as e:
+        return f"❌ Error al subir los bytes de audio: {str(e)}", 500
 
 
 def convert_to_wav_if_needed(filepath):
