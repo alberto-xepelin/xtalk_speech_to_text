@@ -50,14 +50,12 @@ def pipeline():
     blob_path = f"audios/{pais}/{carpeta_file}/{nombre_file}"
     blob = bucket.blob(blob_path)
 
+    print('BLOB PATH:', blob_path)
+
     if blob.exists(client):
         print('EXISTENCIA: EXISTEEEE')
     else:
         print('EXISTENCIA: NO EXISTEEEE')
-
-
-
-
 
     # 0. Chequear si ya existe la transcripción
     client = storage.Client()
