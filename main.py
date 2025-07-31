@@ -35,9 +35,6 @@ def pipeline():
     url_audio = request.args.get("url_audio", "-")
 
     nombre_file = f"audio_{url_audio.split('/')[-1]}.wav"
-
-    print('NOMBRE FILE:', nombre_file)
-
     carpeta_file = nombre_file.split('.wav')[0]
 
     # 👉 Nueva carpeta temporal única
@@ -46,6 +43,21 @@ def pipeline():
     os.makedirs(tmp_dir, exist_ok=True)
 
     # Data Pipeline
+
+    # i. Chequear si existe el archivo
+    client = storage.Client()
+    bucket = client.bucket("xepelin-ds-prod-xtalk")
+    blob_path = f"audios/{pais}/{carpeta_file}/{nombre_file}"
+    blob = bucket.blob(blob_path)
+
+    if blob.exists(client):
+        print('EXISTENCIA: EXISTEEEE')
+    else:
+        print('EXISTENCIA: NO EXISTEEEE')
+
+
+
+
 
     # 0. Chequear si ya existe la transcripción
     client = storage.Client()
