@@ -6,6 +6,19 @@ import glob
 import textwrap
 import subprocess
 import json
+import requests
+
+def download_from_root_origin(url, token):
+
+    payload = {}
+    headers = {
+        'Authorization': f'Bearer {token}',
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    audio_bytes = response.content
+
+    return audio_bytes
 
 
 def convert_to_wav_if_needed(filepath):

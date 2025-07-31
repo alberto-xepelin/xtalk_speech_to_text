@@ -14,10 +14,12 @@ from functions import (
     subir_transcripcion_a_gcs,
     generar_dialogo_final,
     leer_contenido_archivo,
-    subir_transcripcion_a_gcs_json
+    subir_transcripcion_a_gcs_json,
+    download_from_root_origin
 )
 from dotenv import load_dotenv
 import json
+import requests
 
 load_dotenv()
 
@@ -53,9 +55,13 @@ def pipeline():
     print('BLOB PATH:', blob_path)
 
     if blob.exists(client):
-        print('EXISTENCIA: EXISTEEEE')
+        # Existe el archivo
+        pass
     else:
+        # No existe el archivo: Se debe descargar
+        audio_bytes = download_from_root_origin(url_audio, TOKEN_HSP_API)
         print('EXISTENCIA: NO EXISTEEEE')
+        print('Tipo de archivo:', type(audio_bytes))
 
     # 0. Chequear si ya existe la transcripción
     client = storage.Client()
