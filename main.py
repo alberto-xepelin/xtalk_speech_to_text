@@ -35,6 +35,9 @@ def pipeline():
     url_audio = request.args.get("url_audio", "-")
 
     nombre_file = f"{url_audio.split('/')[-1]}.wav"
+
+    print('NOMBRE FILE:', nombre_file)
+
     carpeta_file = nombre_file.split('.wav')[0]
 
     # 👉 Nueva carpeta temporal única
