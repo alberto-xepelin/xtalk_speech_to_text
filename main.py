@@ -57,7 +57,7 @@ def pipeline():
         # Existe el archivo
         pass
     else:
-        # No existe el archivo: Se debe descargar
+        # ii. No existe el archivo: Se debe descargar
         audio_bytes, signal_bytes = download_from_root_origin(url_audio, TOKEN_HSP_API)
 
         if signal_bytes != 200:

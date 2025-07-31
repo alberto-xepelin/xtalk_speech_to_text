@@ -9,6 +9,7 @@ import json
 import requests
 import io
 
+
 def download_from_root_origin(url, token):
 
     payload = {}
@@ -24,6 +25,7 @@ def download_from_root_origin(url, token):
         audio_bytes = response.content
 
         return audio_bytes, 200
+
 
 def upload_audio_to_gcs(audio_bytes, bucket_name, blob_path):
 
@@ -61,7 +63,7 @@ def convert_to_wav_if_needed(filepath):
 
 def read_audio_file(pais, nombre_file, tmp_dir):
     
-    bucket_name = "xepelin-ds-prod-xtalk"
+    bucket_name = "xtalk-transcription"
     blob_path = f"audios/{pais}/{nombre_file}"
     local_path = f"{tmp_dir}/{nombre_file}"
 
