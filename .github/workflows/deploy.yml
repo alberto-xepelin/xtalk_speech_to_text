@@ -50,4 +50,5 @@ jobs:
           --cpu=4 \
           --concurrency=16 \
           --service-account=dm-data-aiml@dm-data-aiml.iam.gserviceaccount.com \
-          --set-env-vars="OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}"
+          --set-env-vars="OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" \
+          --set-env-vars="TOKEN_HSP_API=${{ secrets.TOKEN_HSP_API }}"

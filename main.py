@@ -23,6 +23,8 @@ load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+TOKEN_HSP_API = os.getenv("TOKEN_HSP_API")
+
 app = Flask(__name__)
 
 print("✔ Flask app is loading...")
