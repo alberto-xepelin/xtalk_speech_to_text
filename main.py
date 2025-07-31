@@ -53,21 +53,16 @@ def pipeline():
     blob_path = f"audios/{pais}/{nombre_file}"
     blob = bucket.blob(blob_path)
 
-    print('BLOB PATH:', blob_path)
-
     if blob.exists(client):
-        print('EXISTE EL ARCHIVO')
         # Existe el archivo
         pass
     else:
-        print('NO EXISTE AL ARCHIVO')
         # No existe el archivo: Se debe descargar
         audio_bytes, signal_bytes = download_from_root_origin(url_audio, TOKEN_HSP_API)
 
         if signal_bytes != 200:
             return audio_bytes, signal_bytes
         else:
-            print('SUBIENDO A GCS')
             upload_result, signal_upload = upload_audio_to_gcs(audio_bytes, "xtalk-transcription", blob_path)
 
             if signal_upload != 200:
